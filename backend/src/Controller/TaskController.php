@@ -22,6 +22,7 @@ final class TaskController extends AbstractController
 
         foreach ($user->getUserProjects() as $userProject) {
             $project = $userProject->getProject();
+            $projectValue = $userProject->getCost();
             $pricePerPoint = $user->getPracePerPoint();
 
             foreach ($project->getTasks() as $task) {
@@ -31,7 +32,7 @@ final class TaskController extends AbstractController
                     'projectId' => $project->getId(),
                     'projectName' => $project->getDescription(),
                     'projectPoints' => $project->getPoints(),
-                    'projectValue' => $pricePerPoint * $project->getPoints(),
+                    'projectValue' => $projectValue > 0 ? $projectValue : $pricePerPoint * $project->getPoints(),
                 ];
             }
         }
