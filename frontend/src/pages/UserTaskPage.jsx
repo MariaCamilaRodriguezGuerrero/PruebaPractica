@@ -3,21 +3,38 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getUserTasks, getUsers } from '../api/users';
 import './UserTaskPage.css';
 
+const userTasksCache = {};
+let usersCache = null;
+
 export default function UserTaskPage() {
   const { id } = useParams();
   const [tasks, setTasks] = useState([]);
   const [userName, setUserName] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    getUserTasks(id).then(setTasks);
-    getUsers().then(users => {
-      const user = users.find(u => String(u.id) === String(id));
+    useEffect(() => {
+    if (userTasksCache[id]) {
+      setTasks(userTasksCache[id]);
+    } else {
+      getUserTasks(id).then(data => {
+        userTasksCache[id] = data;
+        setTasks(data);
+      });
+    }
+
+    if (usersCache) {
+      const user = usersCache.find(u => String(u.id) === String(id));
       setUserName(user ? user.name : '');
-    });
+    } else {
+      getUsers().then(users => {
+        usersCache = users;
+        const user = users.find(u => String(u.id) === String(id));
+        setUserName(user ? user.name : '');
+      });
+    }
   }, [id]);
 
-    const tasksByProject = tasks.reduce((acc, task) => {
+  const tasksByProject = tasks.reduce((acc, task) => {
     if (!acc[task.projectName]) acc[task.projectName] = [];
     acc[task.projectName].push(task);
     return acc;
