@@ -30,7 +30,7 @@ final class TaskController extends AbstractController
                     'taskId' => $task->getId(),
                     'taskName' => $task->getName(),
                     'projectId' => $project->getId(),
-                    'projectName' => $project->getDescription(),
+                    'projectName' => $project->getName(),
                     'projectPoints' => $project->getPoints(),
                     'projectValue' => $projectValue > 0 ? $projectValue : $pricePerPoint * $project->getPoints(),
                 ];
